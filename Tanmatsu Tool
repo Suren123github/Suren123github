@@ -1,0 +1,78 @@
+Sub 検索開始()
+CheckFileExists
+'CheckFileEmpty
+OpenFile
+End Sub
+Sub CheckFileExists()
+    Dim filePath As String
+    filePath = Range("B4").Value   ' Replace with the actual path and filename
+
+    Dim fso As Object
+Set fso = CreateObject("Scripting.FileSystemObject")
+If fso.FolderExists(filePath) Then
+GetFileCount = fso.GetFolder(filePath).Files.Count
+If GetFileCount > 0 Then
+
+  MsgBox "file exists"
+  Else
+  MsgBox "file not exists"
+  End If
+  
+Else
+  GetFileCount = -1
+End If
+End Sub
+Function FileExists(filePath As String) As Boolean
+    On Error Resume Next
+    FileExists = (Len(Dir(filePath)) > 0)
+    On Error GoTo 0
+End Function
+Sub CheckFileEmpty()
+    Dim filePath As String
+    filePath = "B4" ' Replace with the actual path and filename
+
+    If FileIsEmpty(filePath) Then
+       
+    Else
+        MsgBox "選択されたフォルダは空です。"
+    End If
+End Sub
+Function FileIsEmpty(filePath As String) As Boolean
+    FileIsEmpty = (FileLen(filePath) = 0)
+End Function
+Sub OpenFile()
+    Dim filePath As String
+    Dim folderPath As String
+    folderPath = ThisWorkbook.Worksheets("c").Range("B4").Value ' Replace with the actual path and filename
+    Filename = Dir(folderPath)
+    filePath = folderPath & Filename
+    On Error Resume Next
+    Workbooks.Open filePath
+    On Error GoTo 0
+
+    If Err.Number <> 0 Then
+       MsgBox "File corrupted"
+    End If
+    
+   Dim lRow As Long
+
+  lRow = ThisWorkbook.Worksheets("c").Range("A1").End(xlDown).Row
+  Dim WorksheetOutput As Worksheet
+Dim WorksheetInput As Worksheet
+Dim CellValue As String
+
+ 
+
+WorksheetOutput = Workbook.Worksheets("変数使用箇所サマリ")
+WorksheetInput = "Active"
+
+ 
+
+For i = 1 To lRow
+CellValue = WorksheetInput.Cells(1, i).Value
+WorksheetOutput.Cells(1, i).Value = CellValue
+
+ 
+
+Next i
+End Sub
