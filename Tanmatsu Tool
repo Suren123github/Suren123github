@@ -43,36 +43,57 @@ End Function
 Sub OpenFile()
     Dim filePath As String
     Dim folderPath As String
+    
+  Dim WorksheetOutput As Worksheet
+  Dim WorksheetInput As Worksheet
+  Dim Outputbook As Workbook
+  Dim getmyFile As Object
+  Dim CellValue As String
+  Dim lRow As Long
+  
     folderPath = ThisWorkbook.Worksheets("c").Range("B4").Value ' Replace with the actual path and filename
     Filename = Dir(folderPath)
     filePath = folderPath & Filename
     On Error Resume Next
-    Workbooks.Open filePath
+    
+    Call OpenAnyFile(filePath)
+   'Set getmyFile = filePath
+   'getmyFile.OpenFile
     On Error GoTo 0
 
     If Err.Number <> 0 Then
        MsgBox "File corrupted"
     End If
-    
-   Dim lRow As Long
 
-  lRow = ThisWorkbook.Worksheets("c").Range("A1").End(xlDown).Row
-  Dim WorksheetOutput As Worksheet
-Dim WorksheetInput As Worksheet
-Dim CellValue As String
+If InStr(Filename, ".") > 0 Then
+   Workbookname = Left(Filename, InStr(Filename, ".") - 1)
+End If
 
- 
+Outputbook = Workbooks(Workbookname)
+   
+'lRow = Outputbook.Worksheets(1).Range("A1").End(xlDown).Row
 
-WorksheetOutput = Workbook.Worksheets("変数使用箇所サマリ")
-WorksheetInput = "Active"
+WorksheetOutput = ThisWorkbook.Worksheets("変数使用箇所サマリ") '
+'WorksheetInput = Outputbook.Worksheets(1)
 
- 
 
 For i = 1 To lRow
-CellValue = WorksheetInput.Cells(1, i).Value
-WorksheetOutput.Cells(1, i).Value = CellValue
-
- 
+WorksheetInput.Cells(1, i).Value = WorksheetOutput.Cells(2, i).Value
 
 Next i
+End Sub
+
+
+Function OpenAnyFile(FileToOpen As String)
+
+Call ShellExecute(0, "Open", FileToOpen & vbNullString, _
+vbNullString, vbNullString, 1)
+
+End Function
+
+
+Sub OpenFile()
+
+Call OpenAnyFile("C:\Filename")
+
 End Sub
